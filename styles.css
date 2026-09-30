@@ -167,3 +167,16 @@ dialog::backdrop{background:rgb(0 0 0 / .45)}
 .drawbar-map .btn.ghost{background:rgb(255 255 255 / .95);color:#1b221d;border-color:transparent}
 .btn.big-done{font-size:1.05rem;padding:12px 20px;flex:1;max-width:220px;justify-content:center;background:#1f5f4a;border-color:#1f5f4a;color:#fff}
 .btn.big-done:disabled{opacity:.55}
+
+/* Firma del autor */
+#firma{margin-top:18px;padding-top:12px;border-top:1px solid var(--line)}
+.firma{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 8px;font-size:.82rem;color:var(--muted)}
+.firma b{color:var(--fg);font-weight:700}
+.firma .mat{font:600 .76rem var(--mono)}
+.firma .links{display:flex;flex-wrap:wrap;gap:4px 12px;width:100%}
+.firma a{color:var(--accent);font-weight:700;text-decoration:none}
+.firma .cr{width:100%;font-size:.72rem}
+.sheet.min #firma{display:none}
+.copia{position:fixed;top:0;left:0;right:0;z-index:4000;background:#b3261e;color:#fff;font-weight:700;text-align:center;padding:10px 14px;font-size:.9rem}
+.copia a{color:#fff}
+@media print{#firma{display:block;border-top:1px solid #999}}

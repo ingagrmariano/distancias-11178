@@ -6,6 +6,7 @@
 <title>Manual · Distancias 11.178</title>
 <meta name="description" content="Cómo usar la app Distancias 11.178 paso a paso.">
 <meta name="theme-color" content="#1f5f4a">
+<meta name="author" content="Ing. Agr. Mariano González">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -93,6 +94,8 @@ summary::after{content:"+";font:700 1.3rem var(--mono);color:var(--accent)}
 details[open] summary::after{content:"–"}
 details>div{padding-bottom:14px;display:flex;flex-direction:column;gap:8px}
 .legal{font-size:.9rem;color:var(--muted)}
+.autor{display:flex;flex-direction:column;gap:4px;padding-block:28px;border-top:2px solid var(--fg);margin-top:8px}
+.autor b{font:700 1.4rem var(--display)}
 .btn:focus-visible,.toc a:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 @media print{
   body{background:#fff;color:#000;font-size:12pt;padding:0}
@@ -117,6 +120,7 @@ details>div{padding-bottom:14px;display:flex;flex-direction:column;gap:8px}
   <header class="hero">
     <div class="eyebrow">Manual de uso</div>
     <h1>Cómo usar Distancias 11.178</h1>
+    <p class="legal" style="margin-bottom:6px">Por Ing. Agr. Mariano González</p>
     <p class="intro">Esta app te dice qué parte de un lote se puede aplicar y qué parte no, según las distancias que pide la Ley 11.178 de Entre Ríos a casas, escuelas, arroyos, colmenas y pueblos. Tarda 5 minutos por lote y no hace falta saber de mapas.</p>
     <p class="legal" style="margin-top:8px">Las imágenes del mapa en las capturas de este manual son ilustrativas; en la app se ve la foto satelital real.</p>
     <ul class="toc noprint">
@@ -424,6 +428,13 @@ details>div{padding-bottom:14px;display:flex;flex-direction:column;gap:8px}
     <p class="legal">Esta app es una ayuda para planificar. No reemplaza la receta agronómica digital, el criterio del ingeniero agrónomo ni las ordenanzas del municipio, que pueden pedir distancias mayores.</p>
     <p class="noprint"><a class="btn" href="./">Abrir la app</a></p>
   </section>
+
+  <footer class="autor" id="autor">
+    <span class="eyebrow">Autor</span>
+    <b>Ing. Agr. Mariano González</b>
+    <span id="autorDatos">Instagram <a href="https://instagram.com/marianogonzalezpizarro">@marianogonzalezpizarro</a></span>
+    <span class="legal">© 2026 Mariano González. Todos los derechos reservados. Prohibida la copia, modificación o distribución de la app y de este manual sin autorización del autor.</span>
+  </footer>
 </div>
 </body>
 </html>

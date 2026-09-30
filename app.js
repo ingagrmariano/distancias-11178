@@ -154,7 +154,7 @@ function canGo(s) {
 function go(s) {
   if (!canGo(s)) return;
   if (draw) cancelDraw();
-  if (step === "campo" && s !== "campo") stopGps();
+  if (step === "campo" && s !== "campo") { stopGps(); campo.punto = null; campo.acc = null; gCampo.clearLayers(); }
   if (s === "res" && lote()) { lote().vistoRes = true; save(); }
   step = s; render(); $("#sheet").classList.remove("min");
   $("#sheet").scrollTop = 0;
@@ -180,6 +180,7 @@ function render() {
 
 function drawMap() {
   gZonas.clearLayers(); gLote.clearLayers(); gAreas.clearLayers();
+  if (step !== "campo") gCampo.clearLayers();
   const L = lote();
   if (!L || step === "lista") { S.lotes.filter((l) => l.geom).forEach((l) => L_poly(l.geom, { color: "#fff", weight: 2, fillOpacity: 0.08 }).bindTooltip(esc(l.nombre || "Lote")).on("click", () => { S.actual = l.id; save(); go("res"); }).addTo(gLote)); return; }
   if (L.geom && (step === "res" || step === "aplic" || step === "campo") && L.areas.length) {
@@ -235,7 +236,7 @@ function pLote() {
     <label class="field">Nombre del lote<input id="inNombre" value="${esc(L.nombre)}" placeholder="Ej.: La Esperanza lote 4"></label>
     <label class="field">Cliente<input id="inCliente" value="${esc(L.cliente)}" placeholder="Ej.: Pérez Hnos."></label>
   </div>
-  ${dibujando ? drawButtons() : `<div class="row">
+  ${dibujando ? "" : `<div class="row">
     ${L.geom ? `<button type="button" class="btn ghost" data-act="editar-lote">Editar puntos</button><button type="button" class="btn ghost" data-act="dibujar-lote">Redibujar de cero</button>` : `<button type="button" class="btn" data-act="dibujar-lote">Dibujar lote</button>`}
     <button type="button" class="btn ghost" data-act="importar">Importar KML</button>
     <button type="button" class="btn ghost" data-act="buscar">Ir a coordenadas</button>
@@ -251,7 +252,7 @@ function pSens() {
   const t = TIPOS[pick.tipo];
   return `<h2 class="t">2 · Áreas sensibles</h2>
   <p class="lead">${dibujando ? (pick.forma === "pt" ? `Tocá en el mapa dónde está: <b>${t.t.toLowerCase()}</b>.` : `Tocá los puntos del ${pick.forma === "line" ? "cauce" : "perímetro"} y después Terminar.`) : "Elegí qué hay cerca del lote y marcalo en el mapa. Podés agregar varias."}</p>
-  ${dibujando ? drawButtons() : `
+  ${dibujando ? "" : `
   <div><div class="lbl">¿Qué hay?</div><div class="tiles">
     ${Object.entries(TIPOS).map(([k, v]) => `<button type="button" class="tile${pick.tipo === k ? " on" : ""}" data-tipo="${k}"><b><span class="sw" style="background:${v.c}"></span>${v.t}</b><small>${v.d}</small></button>`).join("")}
   </div></div>
@@ -375,11 +376,12 @@ function pCampo() {
 
 /* ================= Dibujo ================= */
 function drawButtons() {
-  const n = draw ? draw.pts.length : 0, need = draw && draw.target === "lote" ? 3 : draw && draw.forma === "line" ? 2 : 3;
+  const n = draw ? draw.pts.length : 0, need = draw && draw.forma === "line" ? 2 : 3;
   const pt = draw && draw.forma === "pt";
-  return `<div class="row">${pt ? "" : `<button type="button" class="btn ghost" data-draw="undo" ${n ? "" : "disabled"}>Borrar último</button>
-    <button type="button" class="btn" data-draw="done" ${n >= need ? "" : "disabled"}>Terminar (${n})</button>`}
-    <button type="button" class="btn ghost" data-draw="cancel">Cancelar</button></div>`;
+  return pt ? `<button type="button" class="btn ghost" data-draw="cancel">Cancelar</button>`
+    : `<button type="button" class="btn ghost" data-draw="undo" ${n ? "" : "disabled"}>↶ Borrar</button>
+    <button type="button" class="btn big-done" data-draw="done" ${n >= need ? "" : "disabled"}>✓ Terminar</button>
+    <button type="button" class="btn ghost" data-draw="cancel" aria-label="Cancelar">✕</button>`;
 }
 function startDraw(target, pts) {
   draw = { target, tipo: pick.tipo, forma: target === "lote" ? "poly" : pick.forma, pts: pts ? pts.map((p) => p.slice()) : [], edit: !!pts };
@@ -392,14 +394,15 @@ const mIcon = LF.divIcon({ className: "vtx-mid", iconSize: [16, 16], iconAnchor:
 function refreshDrawPanel() { if (step === "lote" || step === "sens") $("#panel").innerHTML = ({ lote: pLote, sens: pSens })[step](); }
 function syncDraw() {
   gDraw.clearLayers();
-  const h = $("#drawhint");
-  if (!draw) { h.hidden = true; return; }
+  const h = $("#drawhint"), bar = $("#drawbar");
+  if (!draw) { h.hidden = true; bar.hidden = true; return; }
   const n = draw.pts.length, poly = draw.forma === "poly";
-  h.hidden = false;
+  h.hidden = false; bar.hidden = false; bar.innerHTML = drawButtons();
   h.textContent = draw.forma === "pt" ? "Tocá donde está"
     : n === 0 ? "Tocá el primer punto"
     : n < (poly ? 3 : 2) ? "Seguí tocando puntos"
-    : "Tocá un punto para borrarlo · arrastralo para moverlo";
+    : poly ? "Tocá ✓ Terminar o el punto amarillo"
+    : "Tocá ✓ Terminar al llegar al final";
   if (!n) return;
   const lls = draw.pts.map((p) => [p[1], p[0]]);
   const c = draw.target === "lote" ? "#ffffff" : TIPOS[draw.tipo].c;
@@ -419,7 +422,7 @@ function syncDraw() {
   // vértices: tocar = borrar, arrastrar = mover
   lls.forEach((ll, i) => {
     LF.marker(ll, { icon: vIcon(i === 0), draggable: true, title: "Tocá para borrar, arrastrá para mover" })
-      .on("click", () => { draw.pts.splice(i, 1); syncDraw(); refreshDrawPanel(); })
+      .on("click", () => { if (i === 0 && poly && draw.pts.length >= 3) { finishDraw(); return; } draw.pts.splice(i, 1); syncDraw(); refreshDrawPanel(); })
       .on("drag", (ev) => { const p = ev.target.getLatLng(); draw.pts[i] = [p.lng, p.lat]; })
       .on("dragend", () => syncDraw())
       .addTo(gDraw);

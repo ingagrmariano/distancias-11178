@@ -1,5 +1,5 @@
 /* Guarda la app para usarla sin señal y las teselas del mapa que ya se vieron. */
-const APP = "d11178-app-v3";
+const APP = "d11178-app-v4";
 const TILES = "d11178-tiles-v1";
 const MAX_TILES = 3000;
 const SHELL = [
@@ -30,11 +30,14 @@ self.addEventListener("fetch", (e) => {
     }).catch(() => caches.match(req)));
     return;
   }
-  if (url.includes("fonts.g") || url.startsWith(self.location.origin) || url.includes("unpkg.com") || url.includes("cdn.jsdelivr.net")) {
-    // app: la versión guardada al instante y se actualiza en segundo plano
-    e.respondWith(caches.match(req).then((hit) => {
-      const net = fetch(req).then((r) => { const cp = r.clone(); caches.open(APP).then((c) => c.put(req, cp)); return r; }).catch(() => hit);
-      return hit || net;
-    }));
+  if (url.startsWith(self.location.origin)) {
+    // archivos de la app: primero la versión nueva de internet; sin señal, la guardada
+    e.respondWith(fetch(req).then((r) => { const cp = r.clone(); caches.open(APP).then((c) => c.put(req, cp)); return r; })
+      .catch(() => caches.match(req).then((hit) => hit || caches.match("index.html"))));
+    return;
+  }
+  if (url.includes("fonts.g") || url.includes("unpkg.com") || url.includes("cdn.jsdelivr.net")) {
+    // librerías y fuentes: la guardada al instante
+    e.respondWith(caches.match(req).then((hit) => hit || fetch(req).then((r) => { const cp = r.clone(); caches.open(APP).then((c) => c.put(req, cp)); return r; })));
   }
 });

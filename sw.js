@@ -1,5 +1,5 @@
 /* Guarda la app para usarla sin señal y las teselas del mapa que ya se vieron. */
-const APP = "d11178-app-v1";
+const APP = "d11178-app-v2";
 const TILES = "d11178-tiles-v1";
 const MAX_TILES = 3000;
 const SHELL = [

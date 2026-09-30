@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Mapa de distancias 11.178</title>
-<meta name="description" content="Zonas de exclusión y amortiguamiento de la Ley 11.178 de Entre Ríos sobre imagen satelital.">
+<title>Distancias 11.178</title>
+<meta name="description" content="Zonas de exclusión y amortiguamiento de la Ley 11.178 de Entre Ríos sobre el lote, con hectáreas afectadas y KML para el drone.">
 <meta name="theme-color" content="#1f5f4a">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
@@ -12,114 +12,52 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<div class="app">
+<div class="app" id="app">
   <header class="bar">
-    <div class="brand">
+    <button type="button" class="brand" data-go="lista" aria-label="Mis lotes">
       <strong>Distancias 11.178</strong>
-      <span>Entre Ríos</span>
-    </div>
-    <label class="sel">Modo
-      <select id="modo">
-        <option value="manual">Manual</option>
-        <option value="uav60">Drone ≤60 L</option>
-        <option value="uav60p">Drone &gt;60 L</option>
-        <option value="terr">Terrestre</option>
-        <option value="trip">Aérea tripulada</option>
-      </select>
-    </label>
-    <label class="sel">Clase
-      <select id="tox">
-        <option value="Ia">Ia · roja</option>
-        <option value="Ib">Ib · roja</option>
-        <option value="II">II · amarilla</option>
-        <option value="III">III · azul</option>
-        <option value="IV">IV · verde</option>
-      </select>
-    </label>
+      <span id="loteTitulo">Entre Ríos</span>
+    </button>
+    <nav class="steps" id="steps" aria-label="Pasos">
+      <button type="button" data-go="lote"><i>1</i><span>Lote</span></button>
+      <button type="button" data-go="sens"><i>2</i><span>Sensibles</span></button>
+      <button type="button" data-go="aplic"><i>3</i><span>Aplicación</span></button>
+      <button type="button" data-go="res"><i>4</i><span>Resultado</span></button>
+    </nav>
   </header>
 
-  <div id="map" aria-label="Mapa satelital"></div>
+  <div class="mapwrap">
+    <div id="map" aria-label="Mapa satelital"></div>
+    <div class="maptools">
+      <button type="button" class="mt" data-act="base" title="Cambiar fondo">Fondo</button>
+      <button type="button" class="mt" data-act="locate" title="Ir a mi ubicación">Mi ubicación</button>
+    </div>
+    <div class="drawhint" id="drawhint" hidden></div>
+  </div>
 
   <aside class="sheet" id="sheet">
-    <div id="warn60" class="warn" hidden>
-      <b>Drone de más de 60 L:</b> la ley no le fija distancias. Los anillos son una referencia, no una distancia legal. Comparar con:
-      <span class="seg">
-        <button type="button" data-ref="a">Aérea tripulada</button>
-        <button type="button" data-ref="t">Terrestre</button>
-      </span>
-    </div>
-
-    <div class="tools" id="tools">
-      <button type="button" class="tool" data-act="area">+ Área sensible</button>
-      <button type="button" class="tool" data-act="lote">Dibujar lote</button>
-      <button type="button" class="tool" id="gpsBtn" data-act="gps" aria-pressed="false">GPS</button>
-      <button type="button" class="tool" data-act="more" aria-expanded="false">Más</button>
-    </div>
-
-    <div class="more" id="more" hidden>
-      <form id="goto" class="goto">
-        <input id="gotoIn" placeholder="Ir a coordenadas: -31.74, -60.52" inputmode="decimal" aria-label="Coordenadas">
-        <button type="submit" class="tool">Ir</button>
-      </form>
-      <div class="tools">
-        <label class="tool file">Importar KML / GeoJSON<input type="file" id="importIn" accept=".kml,.geojson,.json,application/vnd.google-earth.kml+xml,application/geo+json,application/json"></label>
-        <button type="button" class="tool" data-act="export-kml">Exportar KML (Google Earth, DJI)</button>
-        <button type="button" class="tool" data-act="export-geojson">Exportar GeoJSON (QGIS)</button>
-        <button type="button" class="tool" data-act="share">Compartir resultado</button>
-        <button type="button" class="tool" data-act="print">Imprimir</button>
-        <button type="button" class="tool" data-act="base">Cambiar fondo</button>
-        <button type="button" class="tool danger" data-act="reset">Borrar todo</button>
-      </div>
-    </div>
-
-    <!-- Barra de dibujo -->
-    <div class="drawbar" id="drawbar" hidden>
-      <div id="drawSetup">
-        <div class="lbl">Tipo de área sensible</div>
-        <div class="chips" id="tipoChips">
-          <button type="button" data-tipo="con" class="chip">Vivienda / con personas</button>
-          <button type="button" data-tipo="esc" class="chip">Escuela rural</button>
-          <button type="button" data-tipo="sin" class="chip">Agua, apiario, área protegida</button>
-          <button type="button" data-tipo="urb" class="chip">Planta urbana</button>
-        </div>
-        <div class="lbl">Cómo marcarla</div>
-        <div class="chips">
-          <button type="button" data-forma="poly" class="chip">Perímetro (recomendado)</button>
-          <button type="button" data-forma="pt" class="chip">Un punto</button>
-        </div>
-      </div>
-      <p class="drawmsg" id="drawMsg"></p>
-      <div class="tools">
-        <button type="button" class="tool" data-draw="undo">Deshacer</button>
-        <button type="button" class="tool primary" data-draw="done">Terminar</button>
-        <button type="button" class="tool" data-draw="cancel">Cancelar</button>
-      </div>
-    </div>
-
-    <section id="result" class="card"></section>
-    <section id="loteCard" class="card" hidden></section>
-    <section id="areasCard" class="card" hidden></section>
-
-    <p class="foot">Tocá el mapa para ubicar el punto de aplicación. Distancias según arts. 63, 66, 68 y 76 de la Ley 11.178. Consulta orientativa: no reemplaza la receta agronómica digital ni la normativa municipal.</p>
+    <button type="button" class="grip" id="grip" aria-label="Achicar o agrandar el panel"><span></span></button>
+    <div id="panel"></div>
   </aside>
 </div>
 
 <dialog id="importDlg">
   <form method="dialog">
-    <h2>¿Qué es cada elemento?</h2>
+    <h2>¿Qué es cada elemento del archivo?</h2>
     <div id="importList"></div>
-    <div class="tools">
-      <button value="cancel" class="tool">Cancelar</button>
-      <button value="ok" class="tool primary" id="importOk">Agregar</button>
+    <div class="row">
+      <button value="cancel" class="btn ghost">Cancelar</button>
+      <button value="ok" class="btn">Agregar</button>
     </div>
   </form>
 </dialog>
 
 <section class="print-only" id="printBox"></section>
+<input type="file" id="fileIn" accept=".kml,.geojson,.json,application/vnd.google-earth.kml+xml,application/geo+json,application/json" hidden>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6.5.0/turf.min.js"></script>

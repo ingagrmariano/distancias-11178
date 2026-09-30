@@ -2,6 +2,15 @@
 
 App web para calcular zonas de exclusión y amortiguamiento (Ley 11.178 de Entre Ríos) sobre imagen satelital.
 
+## Cómo se usa
+1. **Lote**: dibujás el contorno tocando las esquinas (o importás KML) y le ponés nombre y cliente.
+2. **Sensibles**: elegís qué hay (vivienda, escuela, curso de agua, apiario, área protegida, sala/club, pueblo) y lo marcás como punto, línea o perímetro.
+3. **Aplicación**: equipo y clase toxicológica.
+4. **Resultado**: hectáreas en exclusión, amortiguamiento y libres; franja en metros y hectáreas por cada área sensible; qué hay que cumplir; KML de la superficie aplicable para el drone.
+
+**Modo campo**: desde el resultado, tocás el mapa o usás el GPS y te dice si podés aplicar donde estás parado.
+Los lotes quedan guardados en el dispositivo (tocando el título "Distancias 11.178" ves la lista).
+
 ## Publicarla gratis en GitHub Pages (una sola vez, ~10 minutos)
 
 1. Creá una cuenta en https://github.com (si no tenés).

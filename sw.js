@@ -1,9 +1,9 @@
 /* Guarda la app para usarla sin señal y las teselas del mapa que ya se vieron. */
-const APP = "d11178-app-v2";
+const APP = "d11178-app-v3";
 const TILES = "d11178-tiles-v1";
 const MAX_TILES = 3000;
 const SHELL = [
-  "./", "index.html", "styles.css", "app.js", "manifest.webmanifest", "icon.svg", "icon-192.png", "icon-512.png",
+  "./", "index.html", "manual.html", "styles.css", "app.js", "manifest.webmanifest", "icon.svg", "icon-192.png", "icon-512.png",
   "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
   "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js",
   "https://cdn.jsdelivr.net/npm/@turf/turf@6.5.0/turf.min.js"

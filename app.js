@@ -155,6 +155,7 @@ function go(s) {
   if (!canGo(s)) return;
   if (draw) cancelDraw();
   if (step === "campo" && s !== "campo") stopGps();
+  if (s === "res" && lote()) { lote().vistoRes = true; save(); }
   step = s; render(); $("#sheet").classList.remove("min");
   $("#sheet").scrollTop = 0;
 }
@@ -167,7 +168,7 @@ function render() {
   document.querySelectorAll("#steps button").forEach((b) => {
     const s = b.dataset.go, i = order.indexOf(s);
     b.classList.toggle("cur", s === step);
-    b.classList.toggle("done", !!L && (s === "lote" ? !!L.geom : s === "sens" ? L.areas.length > 0 : s === "aplic" ? !!L.geom : false) && s !== step);
+    b.classList.toggle("done", !!L && (s === "lote" ? !!L.geom : s === "sens" ? L.areas.length > 0 : s === "aplic" ? !!L.vistoRes : false) && s !== step);
     b.disabled = !canGo(s);
   });
   $("#steps").hidden = step === "lista";
@@ -216,6 +217,7 @@ function pLista() {
   <p class="lead">Elegí un lote o cargá uno nuevo. Se guardan en este teléfono o computadora.</p>
   <div class="row"><button type="button" class="btn" data-act="nuevo">+ Nuevo lote</button>
   <button type="button" class="btn ghost" data-act="importar">Importar KML</button></div>
+  <a class="btn ghost" href="manual.html" style="text-decoration:none;justify-content:center">¿Primera vez? Mirá el manual paso a paso</a>
   ${items.length ? items.map((l) => `<button type="button" class="card-lote" data-open="${l.id}"><b>${esc(l.nombre || "Lote sin nombre")}</b>
     <span class="meta">${esc(l.cliente || "Sin cliente")} · ${l.areas.length} área${l.areas.length === 1 ? "" : "s"} sensible${l.areas.length === 1 ? "" : "s"} · ${new Date(l.fecha || Date.now()).toLocaleDateString("es-AR")}</span>
     <span class="ha">${l.geom ? fmt(ha(turf.polygon(l.geom.coordinates)), 1) + " ha" : "—"}</span></button>`).join("")
@@ -228,13 +230,13 @@ function pLote() {
   const dibujando = draw && draw.target === "lote";
   const hectareas = L.geom ? fmt(ha(turf.polygon(L.geom.coordinates)), 2) + " ha" : null;
   return `<h2 class="t">1 · El lote</h2>
-  <p class="lead">${dibujando ? "Tocá las esquinas del lote en orden sobre el mapa." : L.geom ? `Lote cargado: <b>${hectareas}</b>. Podés redibujarlo o seguir.` : "Buscá el lote en el mapa y dibujá su contorno tocando las esquinas, o importá un KML."}</p>
+  <p class="lead">${dibujando ? "Tocá las esquinas del lote en orden. La forma se cierra sola. Si marcaste mal, tocá el punto para borrarlo o arrastralo." : L.geom ? `Lote cargado: <b>${hectareas}</b>. Podés redibujarlo o seguir.` : "Buscá el lote en el mapa y dibujá su contorno tocando las esquinas, o importá un KML."}</p>
   <div class="grid2">
     <label class="field">Nombre del lote<input id="inNombre" value="${esc(L.nombre)}" placeholder="Ej.: La Esperanza lote 4"></label>
     <label class="field">Cliente<input id="inCliente" value="${esc(L.cliente)}" placeholder="Ej.: Pérez Hnos."></label>
   </div>
   ${dibujando ? drawButtons() : `<div class="row">
-    <button type="button" class="btn${L.geom ? " ghost" : ""}" data-act="dibujar-lote">${L.geom ? "Redibujar" : "Dibujar lote"}</button>
+    ${L.geom ? `<button type="button" class="btn ghost" data-act="editar-lote">Editar puntos</button><button type="button" class="btn ghost" data-act="dibujar-lote">Redibujar de cero</button>` : `<button type="button" class="btn" data-act="dibujar-lote">Dibujar lote</button>`}
     <button type="button" class="btn ghost" data-act="importar">Importar KML</button>
     <button type="button" class="btn ghost" data-act="buscar">Ir a coordenadas</button>
   </div>`}
@@ -375,29 +377,53 @@ function pCampo() {
 function drawButtons() {
   const n = draw ? draw.pts.length : 0, need = draw && draw.target === "lote" ? 3 : draw && draw.forma === "line" ? 2 : 3;
   const pt = draw && draw.forma === "pt";
-  return `<div class="row">${pt ? "" : `<button type="button" class="btn ghost" data-draw="undo" ${n ? "" : "disabled"}>Deshacer</button>
+  return `<div class="row">${pt ? "" : `<button type="button" class="btn ghost" data-draw="undo" ${n ? "" : "disabled"}>Borrar último</button>
     <button type="button" class="btn" data-draw="done" ${n >= need ? "" : "disabled"}>Terminar (${n})</button>`}
     <button type="button" class="btn ghost" data-draw="cancel">Cancelar</button></div>`;
 }
-function startDraw(target) {
-  draw = { target, tipo: pick.tipo, forma: target === "lote" ? "poly" : pick.forma, pts: [] };
+function startDraw(target, pts) {
+  draw = { target, tipo: pick.tipo, forma: target === "lote" ? "poly" : pick.forma, pts: pts ? pts.map((p) => p.slice()) : [], edit: !!pts };
   map.doubleClickZoom.disable();
   $("#sheet").classList.add("min");
   syncDraw(); render();
 }
+const vIcon = (first) => LF.divIcon({ className: "vtx" + (first ? " first" : ""), iconSize: [26, 26], iconAnchor: [13, 13] });
+const mIcon = LF.divIcon({ className: "vtx-mid", iconSize: [16, 16], iconAnchor: [8, 8] });
+function refreshDrawPanel() { if (step === "lote" || step === "sens") $("#panel").innerHTML = ({ lote: pLote, sens: pSens })[step](); }
 function syncDraw() {
   gDraw.clearLayers();
   const h = $("#drawhint");
   if (!draw) { h.hidden = true; return; }
-  const n = draw.pts.length;
+  const n = draw.pts.length, poly = draw.forma === "poly";
   h.hidden = false;
-  h.textContent = draw.forma === "pt" ? "Tocá donde está" : n === 0 ? "Tocá el primer punto" : `${n} punto${n === 1 ? "" : "s"} · seguí tocando o Terminar`;
-  if (n) {
-    const lls = draw.pts.map((p) => [p[1], p[0]]);
-    const c = draw.target === "lote" ? "#ffffff" : TIPOS[draw.tipo].c;
-    (draw.forma === "poly" && n > 2 ? LF.polygon(lls, { color: c, weight: 2.5, dashArray: "6 4", fillOpacity: 0.1 }) : LF.polyline(lls, { color: c, weight: 2.5, dashArray: "6 4" })).addTo(gDraw);
-    lls.forEach((ll, i) => LF.circleMarker(ll, { radius: i === 0 ? 7 : 5, color: "#fff", weight: 2, fillColor: "#1f5f4a", fillOpacity: 1 }).addTo(gDraw));
+  h.textContent = draw.forma === "pt" ? "Tocá donde está"
+    : n === 0 ? "Tocá el primer punto"
+    : n < (poly ? 3 : 2) ? "Seguí tocando puntos"
+    : "Tocá un punto para borrarlo · arrastralo para moverlo";
+  if (!n) return;
+  const lls = draw.pts.map((p) => [p[1], p[0]]);
+  const c = draw.target === "lote" ? "#ffffff" : TIPOS[draw.tipo].c;
+  // la forma se cierra sola: el último punto se une con el primero
+  (poly && n > 2 ? LF.polygon(lls, { color: c, weight: 3, fillColor: c, fillOpacity: 0.15, interactive: false })
+    : LF.polyline(lls, { color: c, weight: 3, interactive: false })).addTo(gDraw);
+  if (poly && n === 2) LF.polyline(lls, { color: c, weight: 2, dashArray: "5 5", interactive: false }).addTo(gDraw);
+  // puntos intermedios: tocarlos agrega un punto en el medio del lado
+  const segs = n > 1 ? (poly && n > 2 ? n : n - 1) : 0;
+  for (let i = 0; i < segs; i++) {
+    const a = draw.pts[i], b = draw.pts[(i + 1) % n];
+    LF.marker([(a[1] + b[1]) / 2, (a[0] + b[0]) / 2], { icon: mIcon, draggable: true, title: "Agregar punto acá" })
+      .on("click", () => { draw.pts.splice(i + 1, 0, [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2]); syncDraw(); refreshDrawPanel(); })
+      .on("dragend", (ev) => { const ll = ev.target.getLatLng(); draw.pts.splice(i + 1, 0, [ll.lng, ll.lat]); syncDraw(); refreshDrawPanel(); })
+      .addTo(gDraw);
   }
+  // vértices: tocar = borrar, arrastrar = mover
+  lls.forEach((ll, i) => {
+    LF.marker(ll, { icon: vIcon(i === 0), draggable: true, title: "Tocá para borrar, arrastrá para mover" })
+      .on("click", () => { draw.pts.splice(i, 1); syncDraw(); refreshDrawPanel(); })
+      .on("drag", (ev) => { const p = ev.target.getLatLng(); draw.pts[i] = [p.lng, p.lat]; })
+      .on("dragend", () => syncDraw())
+      .addTo(gDraw);
+  });
 }
 function cancelDraw() { draw = null; map.doubleClickZoom.enable(); syncDraw(); $("#sheet").classList.remove("min"); }
 function finishDraw() {
@@ -417,12 +443,7 @@ map.on("click", (e) => {
   const p = [e.latlng.lng, e.latlng.lat];
   if (draw) {
     if (draw.forma === "pt") { const L = lote(); L.areas.push({ id: uid(), tipo: draw.tipo, nombre: "", geom: { type: "Point", coordinates: p } }); L.fecha = Date.now(); cancelDraw(); save(); render(); return; }
-    // cerrar el polígono tocando cerca del primer punto
-    if (draw.forma === "poly" && draw.pts.length >= 3) {
-      const f = map.latLngToContainerPoint([draw.pts[0][1], draw.pts[0][0]]);
-      if (f.distanceTo(e.containerPoint) < 18) { finishDraw(); return; }
-    }
-    draw.pts.push(p); syncDraw(); $("#panel").innerHTML = ({ lote: pLote, sens: pSens })[step](); return;
+    draw.pts.push(p); syncDraw(); refreshDrawPanel(); return;
   }
   if (step === "campo") { if (campo.gps) stopGps(); campo.punto = p; $("#panel").innerHTML = pCampo(); }
 });
@@ -567,13 +588,14 @@ document.addEventListener("click", async (e) => {
   if (d.ref) { L.ref60 = d.ref; S.def.ref60 = d.ref; save(); render(); return; }
   if (d.tox) { L.tox = d.tox; S.def.tox = d.tox; save(); render(); return; }
   if (d.del) { L.areas = L.areas.filter((a) => a.id !== d.del); save(); render(); return; }
-  if (d.draw === "undo") { draw.pts.pop(); syncDraw(); $("#panel").innerHTML = ({ lote: pLote, sens: pSens })[step](); return; }
+  if (d.draw === "undo") { draw.pts.pop(); syncDraw(); refreshDrawPanel(); return; }
   if (d.draw === "done") { finishDraw(); return; }
   if (d.draw === "cancel") { cancelDraw(); render(); return; }
   switch (d.act) {
     case "nuevo": nuevoLote(); break;
     case "importar": $("#fileIn").click(); break;
     case "dibujar-lote": startDraw("lote"); break;
+    case "editar-lote": startDraw("lote", L.geom.coordinates[0].slice(0, -1)); break;
     case "marcar": startDraw("area"); break;
     case "buscar": { const f = $("#buscarForm"); f.hidden = !f.hidden; if (!f.hidden) $("#inCoord").focus(); break; }
     case "borrar-lote":

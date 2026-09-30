@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Manual · Distancias 11.178</title>
+<meta name="description" content="Cómo usar la app Distancias 11.178 paso a paso.">
+<meta name="theme-color" content="#1f5f4a">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Manual de campo: una columna de lectura; cada paso con el texto al lado de la captura del celular */
+:root{
+  --bg:#f3f5f2; --surface:#ffffff; --surface-2:#e8ece6; --line:#cfd6cc;
+  --fg:#1b221d; --muted:#56615a; --accent:#1f5f4a; --accent-fg:#ffffff;
+  --excl:#b3261e; --excl-bg:#fbe4e1; --amort:#9a5800; --amort-bg:#fdf0d9; --libre:#2e7d32; --libre-bg:#e3f2e4;
+  --display:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+  --body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root{
+  --bg:#121714; --surface:#1a211d; --surface-2:#232c26; --line:#34403a;
+  --fg:#e6ece7; --muted:#9aa89f; --accent:#6cc4a4; --accent-fg:#0d1511;
+  --excl:#ff8a80; --excl-bg:#3a1a18; --amort:#ffb951; --amort-bg:#3a2a12; --libre:#81c784; --libre-bg:#1b3320;
+  color-scheme:dark}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;overflow-x:clip;background:var(--bg);color:var(--fg);font:18px/1.6 var(--body);padding-inline:16px;padding-block:0 64px}
+.wrap{max-width:920px;margin:0 auto}
+a{color:var(--accent);font-weight:600}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:10px;margin-inline:-16px;padding-inline:16px}
+.top b{font:700 1.2rem var(--display);letter-spacing:.01em}
+.btn{display:inline-flex;align-items:center;gap:6px;font:700 1rem var(--body);background:var(--accent);color:var(--accent-fg);border:0;border-radius:10px;padding:10px 16px;text-decoration:none;cursor:pointer;min-height:44px}
+.btn.ghost{background:var(--surface);color:var(--fg);border:1.5px solid var(--line)}
+header.hero{padding-block:28px 8px}
+h1{font:700 clamp(2.2rem,7vw,3.2rem)/1 var(--display);margin:0 0 10px;letter-spacing:.005em;text-wrap:balance}
+.intro{font-size:1.15rem;max-width:62ch;margin:0}
+h2{font:700 clamp(1.7rem,5vw,2.2rem)/1.05 var(--display);margin:0;letter-spacing:.01em;text-wrap:balance}
+h3{font:700 1.2rem var(--body);margin:0}
+p{margin:0}
+section{padding-block:34px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:16px}
+section:last-of-type{border-bottom:0}
+.eyebrow{font:700 .78rem var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+/* Índice */
+.toc{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px;margin-top:18px;padding:0;list-style:none}
+.toc a{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;text-decoration:none;color:var(--fg);font-weight:600;min-height:52px}
+.toc .n{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--accent);color:var(--accent-fg);font:700 .9rem var(--mono);flex:none}
+.toc .n.s{background:var(--surface-2);color:var(--fg)}
+/* Paso con captura */
+.step{display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:28px;align-items:start}
+.step.rev{grid-template-columns:250px minmax(0,1fr)}
+.step.rev .shot{order:-1}
+@media (max-width:700px){.step,.step.rev{grid-template-columns:minmax(0,1fr)}.step.rev .shot{order:0}}
+.shot{margin:0;display:flex;flex-direction:column;gap:6px;align-items:center}
+.shot img{width:100%;max-width:250px;border-radius:22px;border:6px solid #1b221d;box-shadow:0 6px 18px rgb(0 0 0 / .18);display:block;background:#1b221d}
+.shot.flat img{border-radius:12px;border:1px solid var(--line);box-shadow:none;max-width:420px}
+.shot figcaption{font-size:.85rem;color:var(--muted);text-align:center;max-width:250px}
+ol.do{margin:0;padding:0;list-style:none;counter-reset:d;display:flex;flex-direction:column;gap:12px}
+ol.do>li{counter-increment:d;display:grid;grid-template-columns:36px minmax(0,1fr);gap:12px;align-items:start}
+ol.do>li::before{content:counter(d);display:grid;place-items:center;width:36px;height:36px;border-radius:50%;border:2px solid var(--accent);color:var(--accent);font:700 1rem var(--mono)}
+ul.dot{margin:0;padding-left:1.1em;display:flex;flex-direction:column;gap:6px}
+.btnlabel{display:inline-block;font:700 .92em var(--body);background:var(--accent);color:var(--accent-fg);border-radius:7px;padding:1px 8px;white-space:nowrap}
+.btnlabel.g{background:var(--surface);color:var(--fg);border:1.5px solid var(--line)}
+.tip{border-radius:12px;padding:14px 16px;background:var(--surface);border:1px solid var(--line);display:flex;flex-direction:column;gap:6px}
+.tip.ojo{background:var(--amort-bg);border:1.5px solid var(--amort)}
+.tip.ojo>b:first-child{color:var(--amort)}
+.tip>b:first-child{font-size:.8rem;letter-spacing:.1em;text-transform:uppercase}
+/* Semáforo */
+.colors{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:620px){.colors{grid-template-columns:minmax(0,1fr)}}
+.color{border-radius:14px;padding:16px;border:2px solid currentColor;display:flex;flex-direction:column;gap:6px}
+.color .k{font:700 1.6rem/1 var(--display);text-transform:uppercase;letter-spacing:.02em}
+.color p{color:var(--fg);font-size:1rem}
+.color.e{color:var(--excl);background:var(--excl-bg)} .color.a{color:var(--amort);background:var(--amort-bg)} .color.l{color:var(--libre);background:var(--libre-bg)}
+/* Tablas */
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:1rem}
+th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+tr:last-child td{border-bottom:0}
+th{font:700 .74rem var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--surface-2)}
+td.n{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.e{color:var(--excl);font-weight:700} .a{color:var(--amort);font-weight:700}
+/* Preguntas */
+details{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:0 16px}
+details+details{margin-top:8px}
+summary{cursor:pointer;font-weight:700;padding:14px 0;list-style:none;display:flex;justify-content:space-between;gap:10px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font:700 1.3rem var(--mono);color:var(--accent)}
+details[open] summary::after{content:"–"}
+details>div{padding-bottom:14px;display:flex;flex-direction:column;gap:8px}
+.legal{font-size:.9rem;color:var(--muted)}
+.btn:focus-visible,.toc a:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+@media print{
+  body{background:#fff;color:#000;font-size:12pt;padding:0}
+  .top,.noprint{display:none!important}
+  section{break-inside:auto;padding-block:16pt}
+  .step{break-inside:avoid;grid-template-columns:minmax(0,1fr) 190px}
+  .step.rev{grid-template-columns:190px minmax(0,1fr)}
+  .shot img{max-width:190px;box-shadow:none}
+  h2{break-after:avoid}
+  details{border:0;padding:0} details>div{display:flex!important} summary::after{content:""}
+  a{color:#000;text-decoration:none}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top noprint">
+    <b>Manual de uso</b>
+    <a class="btn" href="./">Abrir la app</a>
+  </div>
+
+  <header class="hero">
+    <div class="eyebrow">Manual de uso</div>
+    <h1>Cómo usar Distancias 11.178</h1>
+    <p class="intro">Esta app te dice qué parte de un lote se puede aplicar y qué parte no, según las distancias que pide la Ley 11.178 de Entre Ríos a casas, escuelas, arroyos, colmenas y pueblos. Tarda 5 minutos por lote y no hace falta saber de mapas.</p>
+    <p class="legal" style="margin-top:8px">Las imágenes del mapa en las capturas de este manual son ilustrativas; en la app se ve la foto satelital real.</p>
+    <ul class="toc noprint">
+      <li><a href="#antes"><span class="n s">0</span>Antes de empezar</a></li>
+      <li><a href="#colores"><span class="n s">i</span>Qué significan los colores</a></li>
+      <li><a href="#paso1"><span class="n">1</span>Cargar el lote</a></li>
+      <li><a href="#paso2"><span class="n">2</span>Marcar lo que hay cerca</a></li>
+      <li><a href="#paso3"><span class="n">3</span>Elegir equipo y producto</a></li>
+      <li><a href="#paso4"><span class="n">4</span>Leer el resultado</a></li>
+      <li><a href="#campo"><span class="n s">+</span>Modo campo con GPS</a></li>
+      <li><a href="#llevar"><span class="n s">+</span>Mandar por WhatsApp y al drone</a></li>
+      <li><a href="#problemas"><span class="n s">?</span>Si algo no anda</a></li>
+      <li><a href="#tabla"><span class="n s">m</span>Tabla de distancias</a></li>
+    </ul>
+  </header>
+
+  <!-- 0 -->
+  <section id="antes">
+    <div class="eyebrow">Paso 0 · una sola vez</div>
+    <h2>Antes de empezar: instalarla en el celular</h2>
+    <p>La app se abre desde este link. Guardalo:</p>
+    <p class="tip"><b>Link de la app</b><span style="font:700 1.05rem var(--mono);word-break:break-all">ingagrmariano.github.io/distancias-11178</span></p>
+    <h3>En Android (Samsung, Motorola, Xiaomi…)</h3>
+    <ol class="do">
+      <li><span>Abrí el link con <b>Chrome</b>.</span></li>
+      <li><span>Tocá los <b>tres puntitos ⋮</b> arriba a la derecha.</span></li>
+      <li><span>Tocá <b>Agregar a pantalla principal</b> (o <b>Instalar app</b>) y después <b>Agregar</b>.</span></li>
+      <li><span>Listo: te aparece un ícono verde con círculos rojo y amarillo. De ahora en más entrá siempre desde ese ícono.</span></li>
+    </ol>
+    <h3>En iPhone</h3>
+    <ol class="do">
+      <li><span>Abrí el link con <b>Safari</b> (con Chrome no se puede instalar).</span></li>
+      <li><span>Tocá el botón <b>Compartir</b> (el cuadrado con la flecha para arriba), abajo en el medio.</span></li>
+      <li><span>Bajá y tocá <b>Agregar a inicio</b>, después <b>Agregar</b>.</span></li>
+    </ol>
+    <div class="tip ojo"><b>Ojo</b><span>La primera vez que uses el GPS el teléfono te va a preguntar si le das permiso de ubicación. Tocá <b>Permitir</b> (o <b>Mientras se usa la app</b>). Si le decís que no, el GPS no va a andar.</span></div>
+    <div class="tip"><b>Sin señal en el campo</b><span>Abrí el lote en tu casa o en el pueblo, con señal, y mirá el mapa con zoom. La app guarda esas imágenes y después funciona aunque en el lote no haya señal.</span></div>
+  </section>
+
+  <!-- Colores -->
+  <section id="colores">
+    <div class="eyebrow">Para entender todo lo demás</div>
+    <h2>Qué significan los colores</h2>
+    <p>La app pinta el lote como un semáforo:</p>
+    <div class="colors">
+      <div class="color e"><span class="k">Rojo · Exclusión</span><p>Acá <b>no se aplica nada</b>, ningún producto. Es la franja pegada a la casa, escuela o arroyo.</p></div>
+      <div class="color a"><span class="k">Amarillo · Amortiguamiento</span><p>Se puede aplicar <b>sólo con productos banda azul o verde</b> (clase III o IV), con el ingeniero presente y avisando 48 horas antes.</p></div>
+      <div class="color l"><span class="k">Verde · Libre</span><p>Se aplica normalmente, con la receta agronómica como siempre.</p></div>
+    </div>
+    <p>La banda de color del marbete del producto te dice la clase: <b>roja</b> = Ia o Ib, <b>amarilla</b> = II, <b>azul</b> = III, <b>verde</b> = IV.</p>
+  </section>
+
+  <!-- Lista -->
+  <section id="inicio">
+    <div class="eyebrow">Al abrir la app</div>
+    <div class="step">
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <h2>La pantalla de inicio: Mis lotes</h2>
+        <p>Cuando abrís la app ves la lista de lotes que ya cargaste. La primera vez está vacía.</p>
+        <ol class="do">
+          <li><span>Para cargar un lote nuevo tocá <span class="btnlabel">+ Nuevo lote</span>.</span></li>
+          <li><span>Para abrir uno que ya cargaste, tocalo en la lista.</span></li>
+        </ol>
+        <div class="tip"><b>Volver a la lista</b><span>Desde cualquier pantalla, tocá el título <b>Distancias 11.178</b> arriba a la izquierda.</span></div>
+      </div>
+      <figure class="shot"><img src="manual/01-lista-vacia.jpg" alt="Pantalla Mis lotes vacía con los botones Nuevo lote e Importar KML"><figcaption>La lista vacía, la primera vez.</figcaption></figure>
+    </div>
+  </section>
+
+  <!-- Paso 1 -->
+  <section id="paso1">
+    <div class="eyebrow">Paso 1 de 4</div>
+    <div class="step">
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <h2>Cargar el lote</h2>
+        <ol class="do">
+          <li><span>Escribí el <b>nombre del lote</b> y el <b>cliente</b>. Sirve para encontrarlo después.</span></li>
+          <li><span>Buscá el lote en el mapa. Con dos dedos acercás y alejás. Si tenés las coordenadas, tocá <span class="btnlabel g">Ir a coordenadas</span>, pegalas y tocá <span class="btnlabel">Ir</span>.</span></li>
+          <li><span>Acercate bien hasta ver los alambrados o los caminos del lote.</span></li>
+        </ol>
+      </div>
+      <figure class="shot"><img src="manual/02-paso1.jpg" alt="Paso 1 con nombre del lote, cliente y coordenadas cargadas"><figcaption>Nombre, cliente y coordenadas.</figcaption></figure>
+    </div>
+    <div class="step rev">
+      <figure class="shot"><img src="manual/03-dibujando-lote.jpg" alt="Dibujando el contorno del lote con tres esquinas marcadas y la forma ya cerrada"><figcaption>Tres esquinas: la forma ya se cierra sola.</figcaption></figure>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <h3>Dibujar el contorno</h3>
+        <ol class="do">
+          <li><span>Tocá <span class="btnlabel">Dibujar lote</span>. El panel de abajo se achica para que veas más mapa.</span></li>
+          <li><span>Tocá cada <b>esquina del lote, una atrás de otra</b>, dando la vuelta en orden. El primer punto queda <b>amarillo</b>.</span></li>
+          <li><span>No hace falta volver al primer punto: <b>la forma se cierra sola</b>, uniendo el último punto con el primero.</span></li>
+          <li><span>Cuando marcaste todas las esquinas, tocá <span class="btnlabel">Terminar</span>.</span></li>
+        </ol>
+      </div>
+    </div>
+    <div class="step">
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <h3>Si marcaste mal un punto</h3>
+        <p>Es muy fácil tocar donde no era. Se arregla así:</p>
+        <ul class="dot">
+          <li><b>Para borrar un punto:</b> tocalo. Cualquier punto, no solo el último.</li>
+          <li><b>Para moverlo:</b> mantenelo apretado y arrastralo con el dedo hasta el lugar correcto.</li>
+          <li><b>Para agregar un punto en el medio de un lado:</b> tocá el <b>circulito blanco chico</b> que hay en la mitad de cada lado.</li>
+          <li><span class="btnlabel g">Borrar último</span> borra el último punto que pusiste.</li>
+        </ul>
+        <div class="tip ojo"><b>Ojo</b><span>Acercá bien el mapa antes de tocar. Con el mapa lejos, un dedo tapa decenas de metros.</span></div>
+      </div>
+      <figure class="shot"><img src="manual/03b-punto-mal.jpg" alt="Un punto marcado fuera del lote que deforma el contorno"><figcaption>El punto de la derecha quedó mal: tocalo y se borra.</figcaption></figure>
+    </div>
+    <div class="step">
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <h3>Listo el lote</h3>
+        <p>Arriba te dice las hectáreas del lote. Controlá que se parezcan a las reales.</p>
+        <p>Si algo quedó mal, tocá <span class="btnlabel g">Editar puntos</span> para corregir sin empezar de nuevo, o <span class="btnlabel g">Redibujar de cero</span>.</p>
+        <p>Tocá <span class="btnlabel">Siguiente: áreas sensibles →</span>.</p>
+        <div class="tip"><b>Si ya tenés el lote en Google Earth o SmartFarm</b><span>En vez de dibujarlo, tocá <span class="btnlabel g">Importar KML</span> y elegí el archivo. La app te pregunta qué es cada cosa del archivo: elegí <b>Es el lote</b> para el contorno.</span></div>
+      </div>
+      <figure class="shot"><img src="manual/04-lote-listo.jpg" alt="Lote dibujado con su superficie en hectáreas"><figcaption>El lote cargado, con sus hectáreas.</figcaption></figure>
+    </div>
+  </section>
+
+  <!-- Paso 2 -->
+  <section id="paso2">
+    <div class="eyebrow">Paso 2 de 4</div>
+    <div class="step">
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <h2>Marcar lo que hay cerca</h2>
+        <p>Marcá todo lo que haya <b>dentro o alrededor del lote</b>, hasta unos 500 metros si aplicás con drone o terrestre, y hasta 3 km si hay una escuela y aplicás con avión.</p>
+        <ol class="do">
+          <li><span>Tocá la tarjeta de lo que hay: <b>Vivienda</b>, <b>Escuela rural</b>, <b>Curso de agua</b>, <b>Apiario o granja</b>, <b>Área protegida</b>, <b>Sala, club, policía</b> o <b>Pueblo o ciudad</b>.</span></li>
+          <li><span>La app elige sola la forma de marcarlo. Normalmente no hace falta cambiarla.</span></li>
+          <li><span>Tocá el botón verde <span class="btnlabel">Marcar … en el mapa</span>.</span></li>
+        </ol>
+      </div>
+      <figure class="shot"><img src="manual/05-paso2-elegir.jpg" alt="Tarjetas para elegir el tipo de área sensible, con Escuela rural seleccionada"><figcaption>Elegí qué hay cerca.</figcaption></figure>
+    </div>
+    <div class="tw">
+      <table>
+        <thead><tr><th>Forma</th><th>Para qué</th><th>Cómo se marca</th></tr></thead>
+        <tbody>
+          <tr><td><b>Punto</b></td><td>Casas, escuelas, colmenas, galpones</td><td>Un solo toque donde está.</td></tr>
+          <tr><td><b>Línea</b></td><td>Arroyos, ríos, cañadas permanentes</td><td>Tocás varios puntos a lo largo del cauce y después <b>Terminar</b>.</td></tr>
+          <tr><td><b>Perímetro</b></td><td>Pueblos, áreas protegidas, el predio de la escuela</td><td>Tocás el contorno como hiciste con el lote y después <b>Terminar</b>.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="step rev">
+      <figure class="shot"><img src="manual/06-dibujando-arroyo.jpg" alt="Dibujando un arroyo como línea al costado del lote"><figcaption>Marcando un arroyo punto por punto.</figcaption></figure>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <h3>Marcar un arroyo</h3>
+        <ol class="do">
+          <li><span>Elegí <b>Curso de agua</b> y tocá <span class="btnlabel">Marcar curso de agua en el mapa</span>.</span></li>
+          <li><span>Tocá sobre el agua siguiendo el cauce. En las curvas poné más puntos.</span></li>
+          <li><span>Si un punto quedó mal, tocalo para borrarlo o arrastralo. Después tocá <span class="btnlabel">Terminar</span>.</span></li>
+        </ol>
+        <div class="tip ojo"><b>Más preciso</b><span>La ley mide desde el <b>límite</b> de la casa o la escuela, no desde el centro. Si el predio es grande, marcalo con <b>Perímetro</b> alrededor del alambrado.</span></div>
+      </div>
+    </div>
+    <div class="step">
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <h3>Revisar lo marcado</h3>
+        <p>Abajo aparece la lista <b>Marcadas</b>. Podés tocar el nombre y escribir uno propio, por ejemplo "Escuela N° 23". Si algo quedó mal, tocá la <b>✕</b> para borrarlo y marcalo de nuevo.</p>
+        <p>En el mapa ya ves las franjas roja y amarilla alrededor de cada cosa.</p>
+        <p>Tocá <span class="btnlabel">Siguiente: cómo vas a aplicar →</span>.</p>
+        <div class="tip"><b>Si no hay nada cerca</b><span>Tocá <b>No hay áreas sensibles cerca → seguir</b>. Pero mirá bien la imagen: una casa o unas colmenas cambian todo.</span></div>
+      </div>
+      <figure class="shot"><img src="manual/07-paso2-marcadas.jpg" alt="Lista de áreas marcadas: Escuela N° 23 y Arroyo Las Tunas"><figcaption>Una escuela y un arroyo marcados.</figcaption></figure>
+    </div>
+  </section>
+
+  <!-- Paso 3 -->
+  <section id="paso3">
+    <div class="eyebrow">Paso 3 de 4</div>
+    <div class="step">
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <h2>Elegir equipo y producto</h2>
+        <ol class="do">
+          <li><span>Tocá el <b>equipo</b> con el que vas a aplicar: drone más de 60 L (T70, T100), drone hasta 60 L (T40, T50), terrestre, manual o avión.</span></li>
+          <li><span>Tocá la <b>clase del producto</b> mirando la banda de color del marbete. Si mezclás varios, elegí <b>el más tóxico</b> (la banda más roja).</span></li>
+          <li><span>Tocá <span class="btnlabel">Ver resultado →</span>.</span></li>
+        </ol>
+        <div class="tip ojo"><b>Drones de más de 60 litros</b><span>La ley sólo habla de drones de <b>hasta 60 L</b>. Para los más grandes no hay distancia escrita. La app te pide que elijas con qué compararlo: <b>Avión</b> (lo más seguro, con franjas más grandes) o <b>Terrestre</b>. En el resultado te muestra los dos números. Ante la duda, consultá con el ingeniero.</span></div>
+        <p>La app se acuerda del equipo y la clase que usaste la última vez.</p>
+      </div>
+      <figure class="shot"><img src="manual/08-paso3.jpg" alt="Paso 3 con drone de más de 60 litros, comparación terrestre y clase III seleccionada"><figcaption>Drone grande comparado con terrestre, producto banda azul.</figcaption></figure>
+    </div>
+  </section>
+
+  <!-- Paso 4 -->
+  <section id="paso4">
+    <div class="eyebrow">Paso 4 de 4</div>
+    <div class="step">
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <h2>Leer el resultado</h2>
+        <p>Arriba, en el recuadro verde, está el número más importante: <b>cuántas hectáreas podés aplicar</b> con ese equipo y ese producto.</p>
+        <p>En el mapa el lote queda pintado: <span class="e">rojo</span> no se aplica, <span class="a">amarillo</span> sólo banda azul o verde con condiciones, verde se aplica normal.</p>
+        <p>Si elegiste un drone de más de 60 L, abajo te dice cuánto daría con la otra comparación.</p>
+      </div>
+      <figure class="shot"><img src="manual/09-resultado.jpg" alt="Resultado con el lote pintado en rojo, amarillo y la superficie aplicable"><figcaption>El lote pintado y la superficie aplicable.</figcaption></figure>
+    </div>
+    <h3>Bajando en el resultado vas a ver:</h3>
+    <div class="step">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <p><b>La tabla de zonas:</b> cuántas hectáreas y qué porcentaje del lote queda en cada color.</p>
+      </div>
+      <figure class="shot flat"><img src="manual/10-tabla.jpg" alt="Tabla con hectáreas en exclusión, amortiguamiento y sin restricción"></figure>
+    </div>
+    <div class="step">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <p><b>Las franjas por cada cosa marcada:</b> a qué distancia está del lote, de cuántos metros es la franja roja y la amarilla, y cuántas hectáreas le saca al lote. Al lado figura el artículo de la ley.</p>
+      </div>
+      <figure class="shot flat"><img src="manual/11-franjas.jpg" alt="Franjas por área sensible con metros y hectáreas"></figure>
+    </div>
+    <div class="step">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <p><b>Qué tenés que cumplir:</b> una lista para ir tildando antes de aplicar, por ejemplo receta digital, aviso de 48 horas o ingeniero presente.</p>
+        <div class="tip ojo"><b>Importante</b><span>Si el lote tiene zona amarilla y la vas a aplicar, <b>el ingeniero tiene que estar en el lote</b> y hay que <b>avisar 48 horas antes</b>. Cerca de escuelas, además se avisa a la dirección de la escuela y se aplica fuera del horario de clases, en vacaciones, fines de semana o feriados.</span></div>
+      </div>
+      <figure class="shot flat"><img src="manual/12-cumplir.jpg" alt="Lista de obligaciones para tildar"></figure>
+    </div>
+  </section>
+
+  <!-- Campo -->
+  <section id="campo">
+    <div class="eyebrow">Ya en el lote</div>
+    <div class="step">
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <h2>Modo campo: ¿puedo aplicar donde estoy?</h2>
+        <ol class="do">
+          <li><span>Abrí el lote y, al final del resultado, tocá <span class="btnlabel g">Modo campo</span>.</span></li>
+          <li><span>Tocá <span class="btnlabel">Usar GPS</span>. El punto negro sos vos.</span></li>
+          <li><span>Arriba del panel te dice en qué zona estás, a cuántos metros de la escuela, casa o arroyo, y si tu producto se puede aplicar ahí.</span></li>
+        </ol>
+        <p>Sin GPS también funciona: tocá el mapa donde querés saber.</p>
+        <div class="tip ojo"><b>Ojo con la precisión</b><span>Abajo dice "GPS ±X m". Si ese número es mayor a 10 y estás cerca del límite entre dos colores, esperá unos segundos quieto hasta que baje.</span></div>
+      </div>
+      <figure class="shot"><img src="manual/14-campo.jpg" alt="Modo campo mostrando amortiguamiento a 170 metros de la escuela"><figcaption>A 170 m de la escuela: zona amarilla, banda azul permitida.</figcaption></figure>
+    </div>
+  </section>
+
+  <!-- Llevar -->
+  <section id="llevar">
+    <div class="eyebrow">Compartir</div>
+    <h2>Mandar el resultado por WhatsApp y al drone</h2>
+    <figure class="shot flat"><img src="manual/13-llevar.jpg" alt="Botones KML para el drone, GeoJSON, Compartir e Imprimir"></figure>
+    <ul class="dot">
+      <li><b>Compartir:</b> abre WhatsApp u otra app con un resumen: lote, hectáreas aplicables, franjas y un link a Google Maps. En la compu lo copia y lo pegás donde quieras.</li>
+      <li><b>KML para el drone:</b> baja un archivo con el lote, la <b>superficie aplicable</b> y las zonas. Se abre en Google Earth y se puede subir a DJI SmartFarm para cargar el lote en el control del drone.</li>
+      <li><b>GeoJSON (QGIS):</b> el mismo contenido, para quien trabaja con QGIS.</li>
+      <li><b>Imprimir:</b> imprime el mapa con el resultado. En el celu podés elegir <b>Guardar como PDF</b>.</li>
+    </ul>
+    <div class="tip ojo"><b>Antes de volar</b><span>Revisá en el control del drone que el lote cargado coincida con el terreno. Si el control no respeta el hueco de una casa o escuela dentro del lote, cargá la zona roja como <b>obstáculo</b> o <b>zona de no aplicación</b>.</span></div>
+  </section>
+
+  <!-- Otros -->
+  <section id="lotes">
+    <div class="eyebrow">Tus lotes</div>
+    <div class="step">
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <h2>Abrir, cambiar o borrar un lote</h2>
+        <ul class="dot">
+          <li><b>Abrir:</b> tocá el título <b>Distancias 11.178</b> y elegí el lote de la lista. Se abre directo en el resultado.</li>
+          <li><b>Cambiar algo:</b> tocá los números de arriba (1, 2, 3, 4) para ir a cualquier paso. Los cambios se guardan solos.</li>
+          <li><b>Borrar:</b> en el paso 1 tocá <b>Borrar este lote</b> dos veces seguidas.</li>
+        </ul>
+        <div class="tip"><b>Dónde se guardan</b><span>Los lotes quedan guardados <b>sólo en ese teléfono o esa compu</b>. Si cambiás de celular, o si otra persona quiere ver el mismo lote, exportá el KML y del otro lado usá <b>Importar KML</b>.</span></div>
+      </div>
+      <figure class="shot"><img src="manual/15-lista.jpg" alt="Lista de lotes con La Esperanza lote 4 guardado"><figcaption>El lote queda guardado en la lista.</figcaption></figure>
+    </div>
+  </section>
+
+  <!-- Problemas -->
+  <section id="problemas">
+    <div class="eyebrow">Ayuda</div>
+    <h2>Si algo no anda</h2>
+    <div>
+      <details><summary>No veo la imagen satelital, está todo negro o gris</summary><div><p>Falta señal o el zoom es muy grande. Alejá un poco con dos dedos. Si seguís sin ver nada, tocá <b>Fondo</b> (arriba a la derecha del mapa) para pasar al mapa de calles, que pesa menos.</p></div></details>
+      <details><summary>Toqué mal una esquina del lote</summary><div><p>Mientras estás dibujando, tocá el punto que está mal y se borra, o arrastralo a su lugar. Si ya terminaste, en el paso 1 tocá <b>Editar puntos</b>.</p></div></details>
+      <details><summary>Marqué algo en el lugar equivocado</summary><div><p>En el paso 2, en la lista <b>Marcadas</b>, tocá la <b>✕</b> al lado y marcalo de nuevo.</p></div></details>
+      <details><summary>El GPS no anda o no me encuentra</summary><div><p>Revisá que la ubicación del teléfono esté prendida. Si antes tocaste "No permitir", andá a la configuración del navegador → Permisos del sitio → Ubicación, y permitila para esta app. Afuera, con cielo abierto, el GPS anda mejor que adentro de la camioneta.</p></div></details>
+      <details><summary>Los números no me cambian cuando elijo otro producto</summary><div><p>Si el lote no tiene zona amarilla, el producto no cambia nada: la zona roja no se aplica con ningún producto y la verde se aplica con todos. Cambia sólo cuando hay zona amarilla.</p></div></details>
+      <details><summary>Todo el lote me sale rojo</summary><div><p>Seguramente hay una escuela cerca y elegiste <b>Avión</b> o <b>Drone más de 60 L comparado con avión</b>: con avión, la franja roja de una escuela es de 500 metros. Revisá el equipo en el paso 3.</p></div></details>
+      <details><summary>Me sigue mostrando una versión vieja de la app</summary><div><p>Cerrá la app del todo (sacala de las apps abiertas) y abrila de nuevo. En la compu, apretá Ctrl + F5.</p></div></details>
+      <details><summary>Borré el lote sin querer</summary><div><p>No se puede recuperar. Por eso conviene exportar el KML de los lotes importantes y guardarlo.</p></div></details>
+    </div>
+  </section>
+
+  <!-- Tabla -->
+  <section id="tabla">
+    <div class="eyebrow">Para consultar</div>
+    <h2>Tabla de distancias de la ley</h2>
+    <p>En metros, medidos desde el límite de la casa, escuela, arroyo o pueblo. <span class="e">Rojo</span>: exclusión hasta. <span class="a">Amarillo</span>: amortiguamiento hasta.</p>
+    <div class="tw">
+      <table>
+        <thead><tr><th>Qué hay cerca</th><th>Manual o drone hasta 60 L</th><th>Terrestre</th><th>Avión</th></tr></thead>
+        <tbody>
+          <tr><td>Vivienda, sala, club, policía</td><td class="n"><span class="e">10</span> / <span class="a">30</span></td><td class="n"><span class="e">100</span> / <span class="a">300</span></td><td class="n"><span class="e">200</span> / <span class="a">600</span></td></tr>
+          <tr><td>Curso de agua, apiario, granja, área protegida</td><td class="n"><span class="e">5</span> / <span class="a">30</span></td><td class="n"><span class="e">50</span> / <span class="a">300</span></td><td class="n"><span class="e">100</span> / <span class="a">600</span></td></tr>
+          <tr><td>Escuela rural</td><td class="n"><span class="e">15</span> / <span class="a">45</span></td><td class="n"><span class="e">150</span> / <span class="a">500</span></td><td class="n"><span class="e">500</span> / <span class="a">3.000</span></td></tr>
+          <tr><td>Pueblo o ciudad</td><td class="n"><span class="e">10</span> / <span class="a">30</span></td><td class="n"><span class="e">100</span> / <span class="a">300</span></td><td class="n"><span class="e">1.000</span> / <span class="a">3.000</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="legal">Artículos 63, 66, 68 y 76 de la Ley 11.178 de Entre Ríos. Para pueblos, la ley fija distancias propias sólo para avión; para los demás equipos la app usa las de vivienda. Los drones de más de 60 L no tienen distancia escrita en la ley.</p>
+    <p class="legal">Esta app es una ayuda para planificar. No reemplaza la receta agronómica digital, el criterio del ingeniero agrónomo ni las ordenanzas del municipio, que pueden pedir distancias mayores.</p>
+    <p class="noprint"><a class="btn" href="./">Abrir la app</a></p>
+  </section>
+</div>
+</body>
+</html>

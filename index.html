@@ -71,5 +71,46 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6.5.0/turf.min.js"></script>
 <script src="app.js"></script>
+
+<!-- Estadísticas privadas (GoatCounter): sin cookies, solo las ve el autor -->
+<script data-goatcounter="https://distancias11178.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+<script>
+/* Cuenta acciones de uso real (no solo visitas). Si no hay señal, no pasa nada. */
+(function () {
+  var ACCIONES = {
+    kml: "Descargó KML",
+    geojson: "Descargó GeoJSON",
+    imprimir: "Imprimió / PDF",
+    compartir: "Compartió",
+    nuevo: "Creó lote nuevo",
+    marcar: "Marcó elemento sensible",
+    importar: "Importó archivo",
+    gps: "Usó GPS"
+  };
+  var yaVioResultado = false;
+  function contar(clave, titulo) {
+    try {
+      if (window.goatcounter && window.goatcounter.count) {
+        window.goatcounter.count({ path: clave, title: titulo, event: true });
+      }
+    } catch (e) {}
+  }
+  document.addEventListener("click", function (ev) {
+    var el = ev.target.closest && ev.target.closest("[data-act],[data-go]");
+    if (!el) return;
+    var act = el.getAttribute("data-act");
+    if (act && ACCIONES[act]) { contar("accion-" + act, ACCIONES[act]); return; }
+    if (el.getAttribute("data-go") === "res" && !yaVioResultado) {
+      yaVioResultado = true; // una vez por sesión: "calculó distancias"
+      contar("accion-resultado", "Vio resultado (calculó distancias)");
+    }
+  }, true);
+  // Instalada como app (pantalla de inicio) vs. navegador
+  try {
+    var instalada = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone;
+    if (instalada) setTimeout(function () { contar("abrio-instalada", "Abrió la app instalada"); }, 1500);
+  } catch (e) {}
+})();
+</script>
 </body>
 </html>
